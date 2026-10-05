@@ -1,2 +1,1 @@
-nom:varchar,id:int,
-rakoto,1
+nom:varchar,id:int,genre:specifique,

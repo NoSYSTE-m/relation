@@ -82,7 +82,6 @@ public class Terminal {
                                     System.out.println("             }");
                                 }
                             }
-                            // o = a;
                         }
                         else if (new_s[3].equals("drop") && new_s[4].equals("column")) {
                             int ind = -1;
@@ -114,8 +113,8 @@ public class Terminal {
                             if (new_s[3].equals("values")) {
                                 String[] val = new_s[4].split(",");
                                 Valeur[] valeur = new Valeur[val.length];
-                                if (((Integer)val.length) > ((Integer)re.attribu.size())) {
-                                    System.out.println("Trop Nombre de valeur");
+                                if (((Integer)val.length) != ((Integer)re.attribu.size())) {
+                                    System.out.println("Nombre de valeur et attribu different");
                                 }
                                 else{
                                     for (int j = 0; j < val.length; j++) {
