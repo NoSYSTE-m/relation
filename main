@@ -1,0 +1,63 @@
+package relation;
+
+import java.util.Scanner;
+// import java.*;
+import java.util.Vector;
+
+class Main {
+    static Vector tables = new Vector();
+    static Vector[] attribus = new Vector[5];
+
+    public static void result_terminal(String s, Vector tabl, Vector[] attri){
+        Terminal t = new Terminal();
+        String[] new_s = s.split(" ");
+        int indice = 0;
+        if (new_s.length == 6) {
+            if ((new_s[0].equals("alter") && new_s[1].equals("table"))) {
+                if (new_s[3].equals("add")) {
+                    for (int i = 0; i < tables.size(); i++) {
+                        // System.out.println("wwww");
+                        if (((Relation)tables.get(i)).nom_relation.equals(new_s[2])) {
+                            indice = i;
+                        }
+                    } 
+                }
+            }
+        }
+        Object o = t.input(s, tabl, attri[indice]);
+        
+        if (o.getClass() == Relation.class) {
+            Relation r = (Relation)o;
+            tabl.add(r);
+        }
+        if (o.getClass() == Attribu.class) {
+            Attribu a = (Attribu)o;
+            if(attri[indice] == null){
+                attri[indice] = new Vector();
+            }
+            attri[indice].add(a);
+        }
+        if (attribus[0] != null) {
+            if ((attribus[indice]).size() > 0) {
+                        for (int i = 0; i < attribus[indice].size(); i++) {
+                            System.out.println("                   "+((Attribu)attribus[indice].get(i)).domaine.nomDomaine+" "+((Attribu)attribus[indice].get(i)).nom_attr+";");
+                        }
+                        System.out.println("             }");
+                    }
+        }
+    }
+
+    public static void main(String[] args) {
+        // System.out.println("hhhh");
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.print("thonySQL> ");
+            String input = scanner.nextLine();
+            
+            result_terminal(input, tables, attribus);
+        // }
+    }
+        
+
+        }
+}

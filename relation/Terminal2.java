@@ -2,13 +2,12 @@ package relation;
 
 import java.util.Vector;
 import fichier.*;
-public class Terminal {
-    public Terminal(){
+public class Terminal2 {
+    public Terminal2(){
 
     }
 
     public Object input(String s, Vector table){
-        Vector v_relation = new Vector<Relation>();
         FileWrite fw = new FileWrite();
         String[] new_s = s.split(" ");
         Vector result_fi = fw.lire_fichier("relation");
@@ -21,24 +20,20 @@ public class Terminal {
                 boolean valera = false;
                 Valeur[] v = new Valeur[colone.length];
                 for (int k = 0; k < colone.length; k++) {
-                    String[] att_dom = colone[k].split(":");
+                    String[] att_dom = colone[j].split(":");
+                    Attribu a = new Attribu(att_dom[0], att_dom[1]);
+                    re.set_attribu(a);
+                    valera = true;
                     if (j == 0) {
-                        Attribu a = new Attribu(att_dom[0], att_dom[1]);
-                        re.set_attribu(a);
-                        valera = false;
                     }
                     else{
                        v[k] = new Valeur(colone[k], ((Attribu)re.attribu.get(k)).domaine);
-                       valera = true;
                     }
                 }
                 if (valera == true) {
                     re.valeur.add(v);
                 }
             }
-            
-            System.out.println(re.valeur.size());
-            v_relation.add(re);
         }
         Object o = new Object();
         if (new_s.length == 3) {
@@ -56,8 +51,8 @@ public class Terminal {
         }
         else if (new_s.length >= 5) {
             if ((new_s[0].equals("alter") && new_s[1].equals("table"))) {
-                for (int i = 0; i < v_relation.size(); i++) {
-                    Relation rel = (Relation)v_relation.get(i);
+                for (int i = 0; i < table.size(); i++) {
+                    Relation rel = (Relation)table.get(i);
                     
                     if (rel.nom_relation.equals(new_s[2])) {
                         // System.out.println("itaaaa");
@@ -91,10 +86,10 @@ public class Terminal {
                 }
             }
             else if (new_s[0].equals("insert") && new_s[1].equals("into")) {
-                for(int i = 0; i < v_relation.size(); i++) {
-                        if (((Relation)v_relation.get(i)).nom_relation.equals(new_s[2])) {
+                for(int i = 0; i < table.size(); i++) {
+                        if (((Relation)table.get(i)).nom_relation.equals(new_s[2])) {
                             // System.out.println("gggggggg");
-                            Relation re = (Relation)v_relation.get(i);
+                            Relation re = (Relation)table.get(i);
                             if (new_s[3].equals("values")) {
                                 String[] val = new_s[4].split(",");
                                 Valeur[] valeur = new Valeur[val.length];
@@ -105,6 +100,7 @@ public class Terminal {
                                     for (int j = 0; j < val.length; j++) {
                                         valeur[j] = new Valeur(val[j], ((Attribu)re.attribu.get(i)).domaine);
                                         
+                                        // System.out.println("hhhhhhhhhhhh");
                                     }
                                     re.valeur.add(valeur);
                                     System.out.println("valeur ajoutee");
@@ -112,6 +108,7 @@ public class Terminal {
                                     System.out.println(valeur[0].valeur+"  "+valeur[1].valeur);
 
                                 }
+                                // o = valeur;
                             }
                             else{
                                 System.out.println("commande introuvable");
@@ -142,9 +139,39 @@ public class Terminal {
             if (new_s[1].equals("*")) {
                 if (new_s.length == 4) {
                     if (new_s[2].equals("from")) {
-                        for(int i = 0; i < v_relation.size(); i++) {
-                            if (((Relation)v_relation.get(i)).nom_relation.equals(new_s[3])) {
-                                Relation re = (Relation)v_relation.get(i);
+                        Vector relation = fw.lire_fichier("relation");
+                        
+                        for(int i = 0; i < relation.size(); i++) {
+                            if (((String)relation.get(i)).equals(new_s[3])) {
+                                Relation re = new Relation((String)relation.get(i));
+                                        // System.out.println("jjjjjj");
+                                        if (re.nom_relation.equals(new_s[3])) {
+                                            Vector ligne_r = fw.lire_fichier(re.nom_relation);
+                                            for (int k = 0; k < ligne_r.size(); k++) {
+                                                String lign_p_lign = (String)ligne_r.get(k);
+                                                String[] colone = lign_p_lign.split(",");
+                                                Valeur[] v = new Valeur[colone.length];
+                                                boolean valera = false;
+                                                for (int m = 0; m < colone.length; m++) {
+                                                    if (k == 0) {
+                                                        // System.out.println("RRRRRRR");
+                                                        String[] att_dom = colone[m].split(":");
+                                                        Attribu a = new Attribu(att_dom[0], att_dom[1]);
+                                                        re.set_attribu(a);
+                                                        valera = false;
+                                                    }
+                                                    else{
+                                                        v[m] = new Valeur(colone[m], ((Attribu)re.attribu.get(m)).domaine);
+                                                        valera = true;
+                                                    }
+                                                }
+                                                if (valera == true) {
+                                                    re.valeur.add(v);
+                                                    
+                                                }
+                                            }
+                                            
+                                        }
                                     
                                 for (int j = 0; j < re.attribu.size(); j++) {
                                     System.out.print(((Attribu)re.attribu.get(j)).nom_attr+"       ");

@@ -1,0 +1,10 @@
+package projet_rel;
+
+public class Teste {
+    public static void main(String[] args) {
+        System.out.println("hello");
+        while (true) {
+            System.out.println("hhhh>");
+        }
+    }
+}
