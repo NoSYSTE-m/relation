@@ -15,30 +15,34 @@ public class Terminal {
         for (int i = 0; i < result_fi.size(); i++) {
             String l = (String)(result_fi.get(i));
             Relation re = new Relation(l);
-            Vector l_rel = fw.lire_fichier(l);
-            for (int j = 0; j < l_rel.size(); j++) {
-                String[] colone = ((String)l_rel.get(j)).split(",");
-                boolean valera = false;
-                Valeur[] v = new Valeur[colone.length];
-                for (int k = 0; k < colone.length; k++) {
-                    String[] att_dom = colone[k].split(":");
-                    if (j == 0) {
-                        Attribu a = new Attribu(att_dom[0], att_dom[1]);
-                        re.set_attribu(a);
-                        valera = false;
-                    }
-                    else{
-                       v[k] = new Valeur(colone[k], ((Attribu)re.attribu.get(k)).domaine);
-                       valera = true;
-                    }
-                }
-                if (valera == true) {
-                    re.valeur.add(v);
-                }
-            }
-            
-            System.out.println(re.valeur.size());
             v_relation.add(re);
+            Vector l_rel = fw.lire_fichier(l);
+            // System.out.println("jjjj");
+            // if (l_rel.size() > 1) {
+                for (int j = 0; j < l_rel.size(); j++) {
+                    String[] colone = ((String)l_rel.get(j)).split(",");
+                    boolean valera = false;
+                    Valeur[] v = new Valeur[colone.length];
+                    for (int k = 0; k < colone.length; k++) {
+                        String[] att_dom = colone[k].split(":");
+                        if (j == 0) {
+                            Attribu a = new Attribu(att_dom[0], att_dom[1]);
+                            re.set_attribu(a);
+                            valera = false;
+                            
+                        }
+                        else{
+                           v[k] = new Valeur(colone[k], ((Attribu)re.attribu.get(k)).domaine);
+                           valera = true;
+                        }
+                    }
+                    if (valera == true) {
+                        re.valeur.add(v);
+                    }
+                }
+                
+                // System.out.println(re.valeur.size());
+            // }
         }
         Object o = new Object();
         if (new_s.length == 3) {
@@ -56,6 +60,7 @@ public class Terminal {
         }
         else if (new_s.length >= 5) {
             if ((new_s[0].equals("alter") && new_s[1].equals("table"))) {
+                System.out.println(v_relation.size());
                 for (int i = 0; i < v_relation.size(); i++) {
                     Relation rel = (Relation)v_relation.get(i);
                     
@@ -63,10 +68,21 @@ public class Terminal {
                         // System.out.println("itaaaa");
                         if (new_s[3].equals("add")) {
                             Attribu a = new Attribu(new_s[4], new_s[5]);
+                            // fw.ecrire(rel.nom_relation, (new_s[4]+"+"+new_s[5]), "attribu");
                             System.out.println("<"+new_s[5]+"> <"+new_s[4]+"> est cree dans le table <"+rel.nom_relation+">");
                             System.out.println("table: <"+rel.nom_relation+"> {");
-                            
-                            o = a;
+                            System.out.println(a.domaine.nomDomaine);
+                            System.out.println(new_s[5]);
+                            rel.attribu.add(a);
+                            fw.ecrire(rel.nom_relation, a.nom_attr+":"+a.domaine.nomDomaine, "attribu");
+                                if (rel.attribu.size() > 0) {
+                                    for (int l = 0; l < rel.attribu.size(); l++) {
+                                        System.out.println("                   "+((Attribu)rel.attribu.get(l)).domaine.nomDomaine+" "+(((Attribu)rel.attribu.get(l)).nom_attr+";"));
+                                    }
+                                    System.out.println("             }");
+                                }
+                            }
+                            // o = a;
                         }
                         else if (new_s[3].equals("drop") && new_s[4].equals("column")) {
                             int ind = -1;
@@ -89,7 +105,7 @@ public class Terminal {
                     }
                     
                 }
-            }
+            
             else if (new_s[0].equals("insert") && new_s[1].equals("into")) {
                 for(int i = 0; i < v_relation.size(); i++) {
                         if (((Relation)v_relation.get(i)).nom_relation.equals(new_s[2])) {
@@ -125,10 +141,11 @@ public class Terminal {
         }
         }
         else if(new_s.length == 2){
+            System.out.println(v_relation.size());
             if (new_s[0].equals("desc")) {
-                    for(int i = 0; i < table.size(); i++) {
-                        if (((Relation)table.get(i)).nom_relation.equals(new_s[1])) {
-                            Relation re = (Relation)table.get(i);
+                    for(int i = 0; i < v_relation.size(); i++) {
+                        if (((Relation)v_relation.get(i)).nom_relation.equals(new_s[1])) {
+                            Relation re = (Relation)v_relation.get(i);
                             desc(re);
                         }
                     }
